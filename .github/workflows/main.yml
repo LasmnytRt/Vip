@@ -1,30 +1,30 @@
-name: Run vip Workflow
+name: run_vip_workflow
 
 on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '*/30 * * * *'
 
 jobs:
-  run_vip_workflow:
+  run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - name: binary by @VIP
-        run: chmod +x VIP
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
-      - name: Install required packages
+      - name: Install dependencies
         run: |
-          pip install pymongo python-telegram-bot pyTelegramBotAPI certifi
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Run VIP.py
-        run: python3 VIP.py
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: |
+          python VIP.py
